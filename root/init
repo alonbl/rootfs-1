@@ -1,0 +1,13 @@
+#!/bin/sh
+
+busybox mkdir -p /usr/bin /usr/sbin /sbin
+/bin/busybox --install
+
+mkdir /proc /sys
+mount -t proc none /proc
+mount -t sysfs none /sys
+
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+
+exec /bin/sh

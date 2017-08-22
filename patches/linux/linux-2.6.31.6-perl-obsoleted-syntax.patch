@@ -1,0 +1,25 @@
+From 4160d9cb889d824a9cd4b3cc56c9f855335d626e Mon Sep 17 00:00:00 2001
+From: Alon Bar-Lev <alon.barlev@gmail.com>
+Date: Tue, 22 Aug 2017 20:44:34 +0300
+Subject: [PATCH] perl: obsoleted syntax
+
+---
+ kernel/timeconst.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/timeconst.pl b/kernel/timeconst.pl
+index eb51d76..063fcc0 100644
+--- a/kernel/timeconst.pl
++++ b/kernel/timeconst.pl
+@@ -370,7 +370,7 @@ if ($hz eq '--can') {
+ 	}
+ 
+ 	@val = @{$canned_values{$hz}};
+-	if (!defined(@val)) {
++	if (!(@val)) {
+ 		@val = compute_values($hz);
+ 	}
+ 	output($hz, @val);
+-- 
+2.13.0
+

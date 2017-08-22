@@ -1,0 +1,42 @@
+From 692c72b05b7813f1d0ae5fb7a65cf9fb29260104 Mon Sep 17 00:00:00 2001
+From: Alon Bar-Lev <alon.barlev@gmail.com>
+Date: Tue, 22 Aug 2017 21:35:09 +0300
+Subject: [PATCH] build: mixed implicit and normal rules: deprecated syntax
+
+---
+ Makefile | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f907eaa..eb7e6d0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -419,7 +419,12 @@ ifeq ($(config-targets),1)
+ -include $(srctree)/arch/$(ARCH)/Makefile
+ export KBUILD_DEFCONFIG
+ 
+-config %config: scripts_basic outputmakefile FORCE
++config: scripts_basic outputmakefile FORCE
++	$(Q)mkdir -p include
++	$(Q)$(MAKE) $(build)=scripts/kconfig $@
++	$(Q)$(MAKE) -C $(srctree) KBUILD_SRC= .kernelrelease
++
++%config: scripts_basic outputmakefile FORCE
+ 	$(Q)mkdir -p include
+ 	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+ 	$(Q)$(MAKE) -C $(srctree) KBUILD_SRC= .kernelrelease
+@@ -1267,7 +1272,10 @@ endif
+ 	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+ 
+ # Modules
+-/ %/: prepare scripts FORCE
++/: prepare scripts FORCE
++	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
++	$(build)=$(build-dir)
++%/: prepare scripts FORCE
+ 	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
+ 	$(build)=$(build-dir)
+ %.ko: prepare scripts FORCE
+-- 
+2.13.0
+

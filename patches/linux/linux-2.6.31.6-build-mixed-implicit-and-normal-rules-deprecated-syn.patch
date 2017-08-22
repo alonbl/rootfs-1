@@ -1,0 +1,44 @@
+From 5805dc64871e29a33c78e4ac3678bc230abc2e19 Mon Sep 17 00:00:00 2001
+From: Alon Bar-Lev <alon.barlev@gmail.com>
+Date: Tue, 22 Aug 2017 22:28:07 +0300
+Subject: [PATCH] build: mixed implicit and normal rules: deprecated syntax
+
+---
+ arch/powerpc/Makefile | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index 39d44f7..dab3890 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -158,16 +158,23 @@ drivers-$(CONFIG_OPROFILE)	+= arch/powerpc/oprofile/
+ # Default to zImage, override when needed
+ all: zImage
+ 
+-BOOT_TARGETS = zImage zImage.initrd uImage zImage% dtbImage% treeImage.% cuImage.% simpleImage.%
++BOOT_TARGETS1 = zImage zImage.initrd uImage
++BOOT_TARGETS2 = zImage% dtbImage% treeImage.% cuImage.% simpleImage.%
+ 
+-PHONY += $(BOOT_TARGETS)
++PHONY += $(BOOT_TARGETS1) $(BOOT_TARGETS2)
+ 
+ boot := arch/$(ARCH)/boot
+ 
+-$(BOOT_TARGETS): vmlinux
++$(BOOT_TARGETS1): vmlinux
+ 	$(Q)$(MAKE) ARCH=ppc64 $(build)=$(boot) $(patsubst %,$(boot)/%,$@)
+ 
+-bootwrapper_install %.dtb:
++$(BOOT_TARGETS2): vmlinux
++	$(Q)$(MAKE) ARCH=ppc64 $(build)=$(boot) $(patsubst %,$(boot)/%,$@)
++
++bootwrapper_install:
++	$(Q)$(MAKE) ARCH=ppc64 $(build)=$(boot) $(patsubst %,$(boot)/%,$@)
++
++%.dtb:
+ 	$(Q)$(MAKE) ARCH=ppc64 $(build)=$(boot) $(patsubst %,$(boot)/%,$@)
+ 
+ define archhelp
+-- 
+2.13.0
+

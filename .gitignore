@@ -1,0 +1,3 @@
+*.cpio*
+root/bin/busybox
+root/lib/
